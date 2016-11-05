@@ -10,6 +10,6 @@ import play.api.mvc._
 class TodoController @Inject() (todoService: TodoService) extends Controller {
 
   def index = Action {
-    Ok(views.html.index(todoService.selectTodoList()))
+    Ok(views.html.index(todoService.selectTodoList(), "TODO List"))
   }
 }
