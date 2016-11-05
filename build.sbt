@@ -6,7 +6,7 @@ lazy val `play2` = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.8"
 
-libraryDependencies ++= Seq( jdbc , cache , ws   , specs2 % Test )
+libraryDependencies ++= Seq( jdbc , cache , ws   , specs2 % Test, "com.typesafe.play" %% "anorm" % "2.5.0", "mysql" % "mysql-connector-java" % "6.0.4" )
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
