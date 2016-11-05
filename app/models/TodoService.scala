@@ -12,7 +12,7 @@ import play.api.db.DBApi
   * Created by bin.shen on 05/11/2016.
   */
 
-case class Todo(id: Option[Long],title: String, finished: Int, post_date: Option[Date])
+case class Todo(id: Option[Long],title: String, finished: Long, post_date: Option[Date])
 
 @javax.inject.Singleton
 class TodoService @Inject() (dbapi: DBApi) {
@@ -29,7 +29,7 @@ class TodoService @Inject() (dbapi: DBApi) {
     }
   }
 
-  def findById(id: Long): Option[Todo] = {
+  def selectTodo(id: Long): Option[Todo] = {
     db.withConnection { implicit connection =>
       SQL("select * from todo where id = {id}").on('id -> id).as(simple.singleOpt)
     }
@@ -39,5 +39,21 @@ class TodoService @Inject() (dbapi: DBApi) {
     db.withConnection(implicit connection =>
       SQL("select * from todo").as(simple *)
     )
+  }
+
+  def insertTodo(todo: Todo) = {
+    db.withConnection { implicit connection =>
+      SQL(
+        """
+          insert into todo (title, finished, post_date) values (
+            {title}, {finished}, {post_date}
+          )
+        """
+      ).on(
+        'title -> todo.title,
+        'finished -> todo.finished,
+        'post_date -> todo.post_date
+      ).executeUpdate()
+    }
   }
 }
