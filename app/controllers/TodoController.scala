@@ -1,8 +1,6 @@
 package controllers
 
 import models._
-import play.api.data.Forms._
-import play.api.data._
 import play.api.mvc._
 import com.google.inject.Inject
 
@@ -15,8 +13,9 @@ class TodoController @Inject() (todoService: TodoService) extends Controller {
     Ok(views.html.index(todoService.selectTodoList(), "TODO List"))
   }
 
-  def add = Action {
-    val todo = new Todo(null, "xxx", 1, null);
+  def add = Action { request =>
+    val body = request.body.asFormUrlEncoded
+    val todo = new Todo(null, body.get("title").mkString, 0, null);
     todoService.insertTodo(todo)
     Redirect("/")
   }
@@ -27,8 +26,8 @@ class TodoController @Inject() (todoService: TodoService) extends Controller {
 
   def save(id: Long) = Action { request =>
     val todo = todoService.selectTodo(id).get
-    print(request.body.asJson)
-    todoService.updateTodo(id, new Todo(null, "111111", todo.finished, todo.post_date))
+    val body = request.body.asFormUrlEncoded
+    todoService.updateTodo(id, new Todo(null, body.get("title").mkString, todo.finished, todo.post_date))
     Redirect("/")
   }
 
