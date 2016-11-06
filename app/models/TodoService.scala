@@ -52,7 +52,28 @@ class TodoService @Inject() (dbapi: DBApi) {
       ).on(
         'title -> todo.title,
         'finished -> todo.finished,
-        'post_date -> todo.post_date
+        'post_date -> new Date()
+      ).executeUpdate()
+    }
+  }
+
+  def deleteTodo(id: Long) = {
+    db.withConnection { implicit connection =>
+      SQL("delete from todo where id = {id}").on('id -> id).executeUpdate()
+    }
+  }
+
+  def updateTodo(id: Long, todo: Todo) = {
+    db.withConnection { implicit connection =>
+      SQL(
+        """
+          update todo set title = {title}, finished = {finished}, post_date = {post_date} where id = {id}
+        """
+      ).on(
+        'title -> todo.title,
+        'finished -> todo.finished,
+        'post_date -> todo.post_date,
+        'id -> id
       ).executeUpdate()
     }
   }
